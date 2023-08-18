@@ -1,71 +1,76 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Queue;
+
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	static int N , M;
-	static ArrayList<Integer>[] graph;
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String[] s = br.readLine().split(" ");
-		N = Integer.parseInt(s[0]);
-		M = Integer.parseInt(s[1]);
-		int V = Integer.parseInt(s[2]);
-	
-		graph = new ArrayList[N+1];
-		for (int i = 1; i <= N; i++) {
-			graph[i] = new ArrayList<Integer>();
-		}
-		for (int i = 0; i < M; i++) {
-			s = br.readLine().split(" ");
-			int a = Integer.parseInt(s[0]);
-			int b =Integer.parseInt(s[1]);
-			
-			graph[a].add(b);
-			graph[b].add(a);
-			
-		}
-	
-		for (int i = 1; i <=N ; i++) {
-			Collections.sort(graph[i]);
-		}
-		dfs(V,new boolean[N+1]);
-		System.out.println();
-		bfs(V);
-		
-	
-	}
-	private static void bfs(int v) {
-		Queue<Integer> q = new ArrayDeque<Integer>();
-		boolean[] visited = new boolean[N+1];
-		visited[v] = true;
-		q.offer(v);
-		System.out.print(v+ " ");
-		while(!q.isEmpty()) {
-			int cur = q.poll();
-			for (int node : graph[cur]) {
-				if(!visited[node]) {
-					System.out.print(node+ " ");
-					visited[node] = true;
-					q.offer(node);
-				} 
-			}
-		}
-		
-	}
-	private static void dfs(int v,boolean [] visited) {
-		visited[v] = true;
-		System.out.print(v+ " ");
-		for (int node : graph[v]) {
-			if(visited[node]) continue;
-			visited[node] = true;
-			dfs(node,visited);
-		}
-		
-	}
+    static int N,M,V;
+    static List<List<Integer>> graph;
+    // static int[] graph;
+    static StringBuilder sb=new StringBuilder();
+    static StringTokenizer st;
+    
+    public static void main(String [] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        st=new StringTokenizer(br.readLine());
+        N=Integer.parseInt(st.nextToken());
+        M=Integer.parseInt(st.nextToken());
+        V=Integer.parseInt(st.nextToken());
+        //그래프 초기화
+        graph = new ArrayList<>();
+        for (int i = 0; i < N+1; i++) {
+            graph.add(new ArrayList<>());
+        }
+        //그래프 입력
+        for(int i=0;i<M;i++){
+            st=new StringTokenizer(br.readLine());
+            int node1=Integer.parseInt(st.nextToken());
+            int node2=Integer.parseInt(st.nextToken());
+            graph.get(node1).add(node2);
+            graph.get(node2).add(node1);
+            // graph[i]=Integer.parseInt(st.nextToken());
+        }
+        
+        for (int i = 1; i <N+1; i++) { 
+	    Collections.sort(graph.get(i)); // 방문 순서를 위해 오름차순 정렬 
+        }
 
+        dfs(V,new boolean[N+1]);
+        sb.append("\n");
+        bfs(V);
+        System.out.print(sb);
+
+    }
+    public static void dfs(int now,boolean[] visited){
+        visited[now]=true;
+        List<Integer> arr=graph.get(now);
+        sb.append(now).append(" ");
+
+        for(int i=0;i<arr.size();++i){
+                if(!visited[arr.get(i)]){
+                    dfs(arr.get(i),visited);
+                }
+            }
+    }
+    
+    public static void bfs(int start){
+        Queue<Integer> q = new ArrayDeque<>();
+        boolean visited[] = new boolean[N+1];
+
+        q.offer(start);
+        visited[start]=true;
+
+        while(!q.isEmpty()){
+            int current = q.poll();
+            sb.append(current).append(" ");
+            List<Integer> arr=graph.get(current);
+            for(int i=0;i<arr.size();++i){
+                if(!visited[arr.get(i)]){
+                    q.offer(arr.get(i));
+                    visited[arr.get(i)]=true;
+                }
+            }
+        }
+    }
 }
+
+
