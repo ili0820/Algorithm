@@ -1,40 +1,50 @@
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    static int r, c;
-    static char[][] maps;
-    static int ans = 0;
-    static Set<Character> alphas = new HashSet<>();
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
-
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        r = scanner.nextInt();
-        c = scanner.nextInt();
-        maps = new char[r][c];
-        for (int i = 0; i < r; i++) {
-            maps[i] = scanner.next().toCharArray();
+    static int R,C,answer;
+    static StringBuilder sb=new StringBuilder();
+    static StringTokenizer st;
+    static int flag;
+    static int[][] board;
+    static int[] dx={0,0,-1,1};
+    static int[] dy={1,-1,0,0};
+    public static void main(String [] args) throws Exception{
+        BufferedReader br =new BufferedReader(new InputStreamReader(System.in));
+        st=new StringTokenizer(br.readLine());
+        R=Integer.parseInt(st.nextToken());
+        C=Integer.parseInt(st.nextToken());
+        String input;
+        board= new int[R][C];
+        for(int i=0;i<R;i++){
+            input=br.readLine();
+            for(int j=0;j<C;j++)board[i][j]=input.charAt(j)-'A';
         }
-        scanner.close();
 
-        alphas.add(maps[0][0]);
-        dfs(0, 0, 1);
-        System.out.println(ans);
+        dfs(0,0,flag| 1<<board[0][0],1);
+        System.out.println(answer);
+        
+
     }
 
-    static void dfs(int x, int y, int count) {
-        ans = Math.max(ans, count);
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if (nx >= 0 && nx < r && ny >= 0 && ny < c && !alphas.contains(maps[nx][ny])) {
-                alphas.add(maps[nx][ny]);
-                dfs(nx, ny, count + 1);
-                alphas.remove(maps[nx][ny]);
+    
+    public static void dfs(int x, int y,int flag,int cnt){
+        answer=Math.max(answer,cnt);
+        for(int i=0;i<4;i++){
+            int nx=x+dx[i];
+            int ny=y+dy[i];
+            if(isin(nx,ny) && (flag & 1<<board[nx][ny])==0){
+                dfs(nx,ny,(flag| 1<<board[nx][ny]), cnt+1);
+
             }
         }
+
     }
+ 
+
+    public static boolean isin(int x,int y){
+        return (0<=x&&x<R && 0<=y && y<C);}
+
 }
+
