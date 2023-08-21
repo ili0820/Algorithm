@@ -1,37 +1,38 @@
-import java.io.*;
 import java.util.*;
-public class Main {
+import java.awt.Point;
+import java.io.*;
 
-    static int N,score,time;
-    // static Stack<Character[]> tasks = new ArrayListM<();
-    static Deque<Integer[]> tasks = new ArrayDeque<Integer[]>();
+public class Main { //2번 문제 업무 평가
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); // 입력 받기 위해 버퍼드 리더 사용 
+		ArrayDeque<Point> p = new ArrayDeque<Point>(); //포인터 클래스를 이용해 데크에 저장 x 값은 남은시간 y 값은 점수
+		int answer = 0; //정답을 출력하기 위해 사용
+		int T = Integer.parseInt(br.readLine()); // T 입력 받기 업무량
+		for (int i = 0; i <T ; i++) { //업무량만큼 돌면서
+			String[] s = br.readLine().split(" "); //입력받기
+			if(s[0].equals("1")) { //1 업무가 주어지면
+				int time = Integer.parseInt(s[2])-1; //현재 시간에 -1
+				int score = Integer.parseInt(s[1]); //점수를 입력받는다.
+				if(time == 0) { //현재시간 -1 이 0이면 하자마자 업무 끝나니깐 
+					answer += score; //점수 더해주기
+				}else { //현재시간 -1이 0이 아니면 업무 안끝나니깐
+					p.addFirst(new Point(time,score)); //데크에 추가
+				}
 
-    static StringBuilder sb=new StringBuilder();//출력 저장할 스트링빌더
-    static StringTokenizer st;//입력을 위한 스트링 토크나이저
-    public static void main(String [] args) throws Exception{
-        BufferedReader br =new BufferedReader(new InputStreamReader(System.in));
-        st=new StringTokenizer(br.readLine());
-        N=Integer.parseInt(st.nextToken());
-
-        //입력받기
-        for(int i=0;i<N;i++){
-            st=new StringTokenizer(br.readLine());//한줄씩 읽어서 공백기준 나누기.
-            if (st.countTokens()==3){//새로운 태스크가 들어왔다면
-                //임시로 temp 라는 배열에 저장
-                Integer [] temp=new Integer[]{Integer.parseInt(st.nextToken()),Integer.parseInt(st.nextToken()),Integer.parseInt(st.nextToken())};
-                temp[2]-=1;//받자마자 일하니까 -1분
-                if (temp[2]==0)score+=temp[1];//일이 다끝난다면 점수추가
-                else tasks.push(temp);//안끝난다면 스택에 넣기
-            }
-            else{
-                if(tasks.isEmpty())continue;//스택이 비어있으면 그냥 넘어가기
-                Integer[] temp =tasks.pop();//지금 하던 일 pop
-                temp[2]-=1;//일의 남은시간 -1분
-                if (temp[2]==0)score+=temp[1];//일이 다끝난다면 점수 추가
-                else tasks.push(temp);//안끝난다면 스택에 넣기
-            }
-        }
-        System.out.print(score);
-
-    }
-}   
+			}
+			else { //0 업무가 없을 경우
+				if(!p.isEmpty()) { // 업무가 비어있지 않다면
+					Point data = p.pollFirst(); //꺼내기
+					if(data.x - 1 == 0) { //업무시간 -1 ==0 이면 업무 끝나니깐
+						answer+= data.y; //정답에 더해주기
+					}
+					else { //업무시간 -1 != 0 일 경우
+						p.addFirst(new Point(data.x-1,data.y)); //업무시간 -1 한 값을 다시 큐에 넣어주기
+					}
+				}
+			}
+		}
+		System.out.println(answer); // 정답출력
+	
+	}
+}
