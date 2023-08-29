@@ -1,35 +1,22 @@
 
-import java.io.*;
-import java.util.*;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
 public class Main {
-    static int N;
-    static int[] dp;
-    static StringTokenizer st;
-
-    public static void main(String[] args) throws Exception{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        st=new StringTokenizer(br.readLine());
-        N=Integer.parseInt(st.nextToken());
-        
-        dp= new int[1000001];
-        dp[2]=1;
-        dp[3]=1;
-        for(int i =4 ; i<=N;i++){
-            int[] temp;
-            if(i%3==0 && i%2==0){
-                temp=new int[] {dp[i-1]+1,dp[i/2]+1,dp[i/3]+1};
-            }else if(i%3==0){
-                temp=new int[] {dp[i-1]+1,dp[i/3]+1};
-            }else if(i%2==0){
-                temp=new int[] {dp[i-1]+1,dp[i/2]+1};
-            }else{
-                temp=new int[] {dp[i-1]+1};
-            }
-            Arrays.sort(temp);
-            dp[i]=temp[0];
-        }
-        
-        System.out.print(dp[N]);
-
-    }
+	static int N;
+	static int data[];
+	public static void main(String[] args) throws Exception{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		data = new int[N+1];
+		data[1] = 0;
+		for (int i = 2; i <= N; i++) {
+			data[i] = data[i-1]+1;
+			if(i%2 ==0) data[i] = Math.min(data[i], data[i/2]+1);
+			if(i%3 ==0) data[i] = Math.min(data[i], data[i/3]+1);
+		}
+		System.out.println(data[N]);
+	}
 }
